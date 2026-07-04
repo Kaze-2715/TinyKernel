@@ -8,7 +8,7 @@ OBJCOPY := $(CROSS_COMPILE)objcopy
 CFLAGS := -march=rv64gc -mabi=lp64d -mcmodel=medany -ffreestanding -nostdlib -O2 -Wall -g
 LDFLAGS := -T src/linker.ld -nostdlib
 
-SRCS := src/entry.S src/main.c src/uart.c src/printk.c src/trap.c
+SRCS := src/entry.S src/main.c src/uart.c src/printk.c src/trap.c src/plic.c
 # 替换引用：将 .c 和 .S 文件替换为 .o 文件
 # 语法：$(变量名:模式=替换)，其中模式是 %.c 或 %.S，替换是 %.o
 OBJS := $(SRCS:src/%.c=build/%.o)
@@ -37,7 +37,7 @@ run: build/kernel.bin
 		-machine virt \
 		-nographic \
 		-bios none \
-		-kernel build/kernel.bin
+		-kernel build/kernel.bin \
 
 clean:
 	rm -rf build src/*.o

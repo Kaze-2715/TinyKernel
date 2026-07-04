@@ -19,11 +19,15 @@ _start:
     # 设置中断委托
     li t0, 0xffff
     csrw medeleg, t0
+    li t0, 0x222
     csrw mideleg, t0
 
     # 允许 S-mode 中断, SIE 位置为 1
     csrsi sstatus, 0x2
 
+    # 开启 SEIE 外部中断使能
+    li t0, (1 << 9)
+    csrs sie, t0
 
     # 配置 mstatus: MPP=01 (S-mode)，MPIE=1
     csrr t0, mstatus
