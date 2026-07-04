@@ -22,11 +22,19 @@ _start:
     li t0, 0x222
     csrw mideleg, t0
 
+    # 允许 S-mode 读取 time CSR
+    li t0, (1 << 1)
+    csrw mcounteren, t0
+
+    # 打开 menvcfg.STCE，允许 S-mode 使用 stimecmp
+    li t0, 0x8000000000000000
+    csrs 0x30a, t0
+
     # 允许 S-mode 中断, SIE 位置为 1
     csrsi sstatus, 0x2
 
-    # 开启 SEIE 外部中断使能
-    li t0, (1 << 9)
+    # 开启 STIE 时钟中断和 SEIE 外部中断使能
+    li t0, (1 << 5) | (1 << 9)
     csrs sie, t0
 
     # 配置 mstatus: MPP=01 (S-mode)，MPIE=1

@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "printk.h"
 #include "plic.h"
+#include "timer.h"
 
 // 读取 S-mode CSR 的内联汇编
 #define read_csr(reg) ({                          \
@@ -25,6 +26,13 @@ void trap_handler_c(void)
     if (scause & (1UL << 63))
     {
         printk("Type: Interrupt\n");
+
+        if (cause_code == 5)
+        {
+            timer_handle_interrupt();
+            printk("[Timer IRQ] tick: %d\n", (int)timer_ticks());
+            return;
+        }
 
         if (cause_code == 9)
         {
